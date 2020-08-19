@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="./fontawesome/css/brands.css" >
+    <link rel="stylesheet" href="./fontawesome/css/fontawesome.css" >
+    <link rel="stylesheet" href="./fontawesome/css/solid.css" >
+
+    <title>Compras</title>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th >Produto</th>
+              <th >Quantidade</th>
+              <th >Preço</th>
+              <th >Subtotal</th>
+            </tr>
+          </thead>
+          <tbody id="compra">
+            
+          </tbody>
+          <tfoot>
+            <tr>
+              <td><strong>Total:</strong></td><td id="total"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="fixed-bottom">
+        <div class="float-right mb-5 mr-5">
+          <button type="button" class="btn btn-lg btn-outline-success  rounded-circle shadow p-3 mb-5 bg-light" data-toggle="modal" data-target="#modalCompras" id="novo">
+            <span class="fa fa-cart-plus"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal fade" id="modalCompras" tabindex="-1" role="dialog" aria-labelledby="modalComprasLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalComprasLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="form-group col-sm-8">
+                  <label for="produto">Produto</label>
+                  <select id="produto" class="form-control">
+                    <option value="">Escolha o produto</option>
+
+                  </select>
+                </div>
+                <div class="form-group col-sm-8">
+                  <label for="preco">Preço</label>
+                  <input type="number" step="any" class="form-control" readonly id="preco" >
+                  
+                </div>
+                <div class="form-group col-sm-8">
+                  <label for="quantidade">Quantidade</label>
+                  <input type="number" step="any" class="form-control"   id="quantidade">
+                  
+                </div>
+                <div class="form-group col-sm-8">
+                  <label for="subtotal">Subtotal</label>
+                  <input type="number" step="any" class="form-control" readonly  id="subtotal">
+                  
+                </div>
+
+              </div>
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" id="salvar">Comprar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="./jquery/jquery-3.5.1.slim.min.js" ></script>
+    <script src="./popper/popper.min.js" ></script>
+    <script src="./bootstrap/js/bootstrap.min.js" ></script>
+
+    <script src="js/produtos.js"> </script>
+    <script>
+      const novo=document.getElementById('novo');
+      const produto=document.getElementById('produto');
+      const preco=document.getElementById('preco');
+      const quantidade=document.getElementById('quantidade');
+      const subtotal=document.getElementById('subtotal');
+      const salvar=document.getElementById('salvar');
+      const compra=document.getElementById('compra');
+      const total=document.getElementById('total');
+
+      let tabela={};
+
+      data.map((f)=>{
+        const opt=document.createElement('option');
+        opt.value=f.preco;
+        opt.text=f.produto;
+
+        produto.appendChild(opt);
+
+      })
+      
+      produto.addEventListener('change',()=>{
+        const valor=produto.options[produto.selectedIndex];
+        console.log(valor);
+       // preco.removeAttribute('readonly')
+        preco.value=parseFloat(valor.value);
+        //preco.readnly=true;
+        tabela={produto:valor.text,preco:valor.value}
+      })
+
+      quantidade.addEventListener('input',()=>{
+         
+        let qtd=parseFloat(quantidade.value)
+        let pc=parseFloat(preco.value)
+
+        let sub=qtd*pc
+
+          subtotal.value=sub;
+          tabela=Object.assign({quantidade:quantidade.value,subtotal:subtotal.value},tabela);
+          console.log(tabela);
+      })
+
+      salvar.addEventListener('click',()=>{
+
+        const tr=document.createElement('tr');
+        let td=`<td>${tabela.produto}</td>
+        <td>${tabela.quantidade}</td>
+        <td>R$ ${tabela.preco}</td>
+        <td>R$ ${tabela.subtotal}</td>`;
+
+        tr.innerHTML=td;
+        compra.appendChild(tr);
+
+        let tot='';
+
+        if(total.innerText ===''){
+          tot=parseFloat(0);
+          console.log(tot);
+
+        }else{
+          tot=parseFloat(total.innerText);
+          console.log(tot);
+        }
+    
+        
+        let sub=parseFloat(tabela.subtotal);
+        console.log(sub)
+        let conta=tot+sub;
+        total.innerText=conta;
+        tabela={};
+
+          produto.selectedIndex=null;
+          preco.value=null;
+          quantidade.value=null;
+          subtotal.value=null;
+
+          $('#modalCompras').modal('hide');
+
+      })
+
+
+    </script>
+
+
+  </body>
+</html>
